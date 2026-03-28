@@ -88,11 +88,6 @@ dependencies {
 	implementation "blue.endless:jankson:1.2.1"
 
 	modImplementation "net.modificationstation:StationAPI:${project.stapi_version}"
-
-	// Optional, but convenient mods for mod creators and users alike.
-	modImplementation("maven.modrinth:modmenu-beta:${project.modmenu_version}") {transitive false}
-	modImplementation("net.glasslauncher.mods:GlassConfigAPI:${project.gcapi_version}") {transitive false}
-	modImplementation("net.glasslauncher:HowManyItems-Fabric-Unofficial:${project.howmanyitems_version}") {transitive false}
 }
 
 tasks.withType(Jar).configureEach {
@@ -157,5 +152,22 @@ publishing {
 	}
 
 	repositories {
+		maven {
+			name = "lemmmyRepo"
+			url = uri("https://repo.lem.sh/releases")
+
+			if (System.getenv("MAVEN_USERNAME") && !System.getenv("MAVEN_USERNAME").isEmpty()) {
+				credentials {
+					username = System.getenv("MAVEN_USERNAME")
+					password = System.getenv("MAVEN_PASSWORD")
+				}
+			} else {
+				credentials(PasswordCredentials)
+			}
+
+			authentication {
+				basic(BasicAuthentication)
+			}
+		}
 	}
 }
