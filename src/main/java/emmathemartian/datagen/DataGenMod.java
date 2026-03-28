@@ -25,7 +25,7 @@ public class DataGenMod {
 
     @SuppressWarnings("unused")
     @EventListener(priority = ListenerPriority.LOWEST)
-    private static void onPostRegistries(DimensionRegistryEvent event) {
+    public static void onPostRegistries(DimensionRegistryEvent event) {
         String property = System.getProperty("datagen.run");
         if (property == null)
             return;
