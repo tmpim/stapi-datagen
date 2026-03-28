@@ -1,15 +1,15 @@
 plugins {
-	id 'fabric-loom' version '1.7.2'
-	id 'babric-loom-extension' version '1.6.10'
+	id 'fabric-loom' version '1.9.2'
+	id 'babric-loom-extension' version '1.15-SNAPSHOT'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-
-archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
 
 loom {
 	mixin {

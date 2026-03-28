@@ -14,14 +14,13 @@ import net.modificationstation.stationapi.api.util.Null;
 
 @SuppressWarnings("unused")
 public class TestMod {
-    @Entrypoint.Namespace
-    public static final Namespace NAMESPACE = Null.get();
+    public static final Namespace NAMESPACE = Namespace.resolve();
 
     public static Item itemRuby, itemDirtyRuby, itemSandyRuby, itemGravellyRuby, itemRubyRod;
     public static Block blockRuby;
 
     @EventListener
-    private static void onRegisterItems(ItemRegistryEvent event) {
+    public static void onRegisterItems(ItemRegistryEvent event) {
         itemRuby = new TemplateItem(NAMESPACE.id("ruby")).setTranslationKey(NAMESPACE, "ruby");
         itemDirtyRuby = new TemplateItem(NAMESPACE.id("dirty_ruby")).setTranslationKey(NAMESPACE, "dirty_ruby");
         itemSandyRuby = new TemplateItem(NAMESPACE.id("sandy_ruby")).setTranslationKey(NAMESPACE, "sandy_ruby");
@@ -30,7 +29,7 @@ public class TestMod {
     }
 
     @EventListener
-    private static void onRegisterBlocks(BlockRegistryEvent event) {
+    public static void onRegisterBlocks(BlockRegistryEvent event) {
         blockRuby = new TemplateBlock(NAMESPACE.id("ruby_block"), Material.STONE).setTranslationKey(NAMESPACE, "ruby_block").setHardness(2.0f).setResistance(4.0f);
     }
 }

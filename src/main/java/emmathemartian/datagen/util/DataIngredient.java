@@ -1,7 +1,7 @@
 package emmathemartian.datagen.util;
 
 import com.google.gson.JsonObject;
-import cyclops.control.Either;
+import com.mojang.datafixers.util.Either;
 import emmathemartian.datagen.DataGenException;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -12,17 +12,16 @@ import net.modificationstation.stationapi.api.util.Identifier;
 public record DataIngredient(Either<Item, TagKey<Item>> item, int count, int damage) {
     public JsonObject toJson() {
         JsonObject object = new JsonObject();
-
-        if (item.isLeft()) {
-            Identifier maybeItem = ItemRegistry.INSTANCE.getId(item.leftOrElse(null));
+        item.ifLeft((left) -> {
+            Identifier maybeItem = ItemRegistry.INSTANCE.getId(left);
             if (maybeItem == null)
-                throw new DataGenException("Item did not exist in registry: " + item.leftOrElse(null));
+                throw new DataGenException("Item did not exist in registry: " + left);
             object.addProperty("item", maybeItem.toString());
             if (damage != 0)
                 object.addProperty("damage", damage);
-        } else if (item.isRight()) {
-            object.addProperty("tag", item.orElse(null).id().toString());
-        } else {
+        }).ifRight((right) -> object.addProperty("tag", right.id().toString()));
+
+        if (object.size() == 0) {
             throw new DataGenException("Ingredient.toJson() called but Ingredient.item was not present.");
         }
 
