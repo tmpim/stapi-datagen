@@ -5,16 +5,14 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.mine_diver.unsafeevents.listener.EventListener;
 import net.mine_diver.unsafeevents.listener.ListenerPriority;
 import net.modificationstation.stationapi.api.event.registry.DimensionRegistryEvent;
-import net.modificationstation.stationapi.api.mod.entrypoint.Entrypoint;
-import net.modificationstation.stationapi.api.util.Null;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.Objects;
 
 public class DataGenMod {
-    @Entrypoint.Logger
-    public static final Logger LOGGER = Null.get();
+    public static final Logger LOGGER = LoggerFactory.getLogger("datagen");
 
     public static Path targetPath;
 
