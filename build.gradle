@@ -63,6 +63,10 @@ repositories {
 		name = 'Jitpack'
 		url = 'https://jitpack.io'
 	}
+	maven {
+		name = "lemmmyRepo"
+		url = uri("https://repo.lem.sh/releases")
+	}
 	// Used for another StationAPI dependency
 	exclusiveContent {
 		forRepository {
