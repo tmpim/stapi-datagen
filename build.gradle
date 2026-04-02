@@ -85,7 +85,7 @@ repositories {
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings "net.glasslauncher:biny:${project.yarn_mappings}:v2"
-	modImplementation "babric:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation 'org.apache.logging.log4j:log4j-slf4j18-impl:2.17.2'
@@ -152,6 +152,12 @@ publishing {
 	publications {
 		mavenJava(MavenPublication) {
 			from components.java
+
+			pom.withXml {
+				asNode().dependencies.dependency
+					.findAll { it.artifactId.text() == "StationAPI" }
+					.each { it.parent().remove(it) }
+			}
 		}
 	}
 
