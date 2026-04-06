@@ -34,10 +34,14 @@ public class LangBuilder implements IDataBuilder {
 
     public String buildLang() {
         StringBuilder content = new StringBuilder();
-        translations.forEach((key, translation) -> content
-                .append(key)
+        translations
+            .entrySet()
+            .stream()
+            .sorted(Map.Entry.comparingByKey())
+            .forEach((entry) -> content
+                .append(entry.getKey())
                 .append('=')
-                .append(translation)
+                .append(entry.getValue())
                 .append('\n'));
         return content.toString();
     }
