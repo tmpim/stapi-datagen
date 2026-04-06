@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import java.nio.file.Path;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class DataGenMod {
     public static final Logger LOGGER = LoggerFactory.getLogger("datagen");
@@ -25,27 +27,37 @@ public class DataGenMod {
     @EventListener(priority = ListenerPriority.LOWEST)
     public static void onPostRegistries(DimensionRegistryEvent event) {
         String property = System.getProperty("datagen.run");
-        if (property == null)
-            return;
 
-        final String[] toRun = property.split(",");
-        LOGGER.info("Data generator will be executed for mods: [{}]", String.join(", ", toRun));
-        LOGGER.info("Data generation target path is `{}`", getTargetPath());
+        var toRun = property != null ? property.split(",") : new String[]{};
+        var toRunSet = Set.of(toRun);
+        if (!toRunSet.isEmpty()) {
+            LOGGER.info("Data generator will be executed for mods: [{}]", String.join(", ", toRun));
+        } else {
+            LOGGER.info("Data generator will be executed for all valid entrypoints in the classpath");
+        }
+
+        targetPath = getTargetPath();
+        LOGGER.info("Data generation target path is `{}`", targetPath);
         LOGGER.info("Note: The game will be stopped after data generation finishes.");
 
-        if (toRun.length > 0) {
-            targetPath = getTargetPath();
-
-            if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
-                throw new DataGenException("Data generators should not be executed in production environments. Exiting.");
-            }
-
-            FabricLoader.getInstance()
-                    .getEntrypointContainers("data", DataEntrypoint.class)
-                    .forEach(entrypoint -> entrypoint.getEntrypoint().run());
-
-            LOGGER.info("Data generation finished, closing game.");
-            System.exit(0);
+        if (!FabricLoader.getInstance().isDevelopmentEnvironment()) {
+            LOGGER.error("Data generators should not be executed in production environments. Exiting.");
+            System.exit(1);
         }
+
+        var entrypoints = FabricLoader.getInstance()
+            .getEntrypointContainers("data", DataEntrypoint.class)
+            .stream()
+            .filter(c -> toRunSet.isEmpty() || toRunSet.contains(c.getProvider().getMetadata().getId()))
+            .collect(Collectors.toSet());
+
+        if (entrypoints.isEmpty()) {
+            LOGGER.info("No data generators found! Exiting.");
+        } else {
+            entrypoints.forEach(c -> c.getEntrypoint().run());
+            LOGGER.info("Data generation finished, closing game.");
+        }
+
+        System.exit(0);
     }
 }
