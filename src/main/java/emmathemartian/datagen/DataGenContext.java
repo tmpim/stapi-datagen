@@ -1,6 +1,7 @@
 package emmathemartian.datagen;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.modificationstation.stationapi.api.util.Namespace;
 
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.function.Function;
 
 public record DataGenContext(Namespace namespace) {
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
+
     public void run(Function<DataGenContext, AbstractDataProvider> provider) {
         run(provider.apply(this));
     }
@@ -31,7 +34,7 @@ public record DataGenContext(Namespace namespace) {
     }
 
     public void save(Path path, JsonObject object) {
-        save(path, new Gson().toJson(object));
+        save(path, GSON.toJson(object));
     }
 
     public Path getTargetPath(String parent) {
