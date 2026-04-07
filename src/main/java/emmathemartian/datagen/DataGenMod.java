@@ -27,8 +27,9 @@ public class DataGenMod {
     @EventListener(priority = ListenerPriority.LOWEST)
     public static void onPostRegistries(DimensionRegistryEvent event) {
         String property = System.getProperty("datagen.run");
+        if (property == null) return;
 
-        var toRun = property != null ? property.split(",") : new String[]{};
+        var toRun = property.split(",");
         var toRunSet = Set.of(toRun);
         if (!toRunSet.isEmpty()) {
             LOGGER.info("Data generator will be executed for mods: [{}]", String.join(", ", toRun));
